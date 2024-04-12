@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data page</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Mobile Number</th>
+          <th>Email</th>
+          <th>Password</th>
+          <th>DOB</th>
+          <th>Address</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <a href="/">Go to registration page</a>
+  </body>
+</html>
+<script>
+  fetch("/getUser")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.error) {
+        alert("Server not running");
+        return;
+      }
+      console.log(data);
+      data.payload.forEach((user) => addRow(user));
+    });
+  function addRow(user) {
+    const table = document.querySelector("tbody");
+
+    const row = table.insertRow();
+    Object.entries(user).forEach(([key, val]) => {
+      const cell = row.insertCell();
+      cell.innerHTML = val;
+    });
+    const deleteButton = document.createElement("button");
+    deleteButton.innerHTML = "Delete";
+    deleteButton.onclick = () => deleteRow(user.email);
+    row.insertCell().appendChild(deleteButton);
+  }
+  async function deleteRow(email) {
+    const password = prompt("Enter password");
+    try {
+      const res = await fetch("/deleteUser", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      alert(data.message);
+    } catch (error) {
+      console.error(error);
+      alert("Server not running");
+    }
+  }
+</script>

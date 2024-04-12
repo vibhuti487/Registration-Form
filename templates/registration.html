@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      input {
+        padding: 5px;
+        font-size: 18px;
+        border-radius: 5px;
+      }
+      button {
+        padding: 5px;
+        font-size: 18px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <form>
+      <input name="first_name" type="text" placeholder="First Name" required />
+      <input name="last_name" type="text" placeholder="Last Name" required />
+      <input name="mobile_number" type="number" placeholder="Mobile Number" required />
+      <input name="email" type="email" placeholder="Email" required />
+      <input name="password" type="password" placeholder="Password" required />
+      <input name="dob" type="date" placeholder="Date or Birth" required />
+      <input name="address" type="text" placeholder="Address" required />
+      <button type="submit">Save user</button>
+    </form>
+    <a href="/data">Go to data page</a>
+  </body>
+</html>
+<script>
+  const frm = document.querySelector("form");
+  frm.addEventListener("submit", handlSubmit);
+  function handlSubmit(e) {
+    e.preventDefault();
+    const first_name = e.target.first_name.value;
+    const last_name = e.target.last_name.value;
+    const mobile_number = e.target.mobile_number.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    const dob = e.target.dob.value;
+    const address = e.target.address.value;
+    const userData = {
+      first_name,
+      last_name,
+      mobile_number,
+      email,
+      password,
+      dob,
+      address,
+    };
+    saveUser(userData);
+  }
+  async function saveUser(userData) {
+    try {
+      const res = await fetch("/saveUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+      const data = await res.json();
+      alert(data.message)
+    } catch (error) {
+      console.error(error);
+      alert("Server not running");
+    }
+  }
+</script>
